@@ -1,0 +1,97 @@
+﻿@using System.Collections.ObjectModel
+@using Auxiliar
+@using JoKenPo.Domain.Helper
+@typeparam TType
+
+<table class="table @TableClasses">
+    <thead>
+    <tr>
+        @TableHeader
+        @if (Actions.Any())
+        {
+            <th></th>
+        }
+    </tr>
+    </thead>
+    <tbody>
+    @if (Data.Any())
+    {
+        @foreach (var line in Data.ToList())
+        {
+            <tr>
+                @LineTemplate(line)
+                @if (Actions.Any())
+                {
+                    <td class="acoes">
+                        @foreach (var action in Actions)
+                        {
+                            @if (action.Text == string.Empty || action.Text is null)
+                            {
+                                <span @onclick="@(async c => { await ExecuteAction(line, action.Action); })">
+                                    <i class="fa fa-fw fa-lg @action.Icon"></i>
+                                </span>
+                            }
+                            else
+                            {
+                                <span @onclick="@(async c => { await ExecuteAction(line, action.Action); })" class="botao botao-alternativo">@action.Text</span>
+                            }
+                        }
+                    </td>
+                }
+            </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="3">
+                <span>@EmptyMessage</span>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@code {
+
+    [Parameter]
+    public RenderFragment TableHeader { get; set; }
+
+    [Parameter]
+    public RenderFragment<TType> LineTemplate { get; set; }
+
+    [Parameter]
+    public ObservableCollection<TType> Data { get; set; }
+
+    [Parameter]
+    public IEnumerable<TableAction<TType>> Actions { get; set; } = new List<TableAction<TType>>();
+    
+    [Parameter]
+    public IEnumerable<TableTypes> Classes { get; set; }
+
+    [Parameter]
+    public EventCallback<ObservableCollection<TType>> DataChanged { get; set; }
+
+    [Parameter]
+    public string EmptyMessage { get; set; } = "Data was not defined or is empty";
+    
+    private string TableClasses { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        if(Classes is null || !Classes.Any())
+            Classes = new List<TableTypes> {TableTypes.TableResponsive};
+        foreach (var tableClass in Classes)
+        {
+            TableClasses += $" {tableClass.Description()} ";
+        }
+    }
+
+    private async Task ExecuteAction(TType line, EventCallback<TType> action)
+    {
+        await action.InvokeAsync(line);
+        await DataChanged.InvokeAsync(Data);
+    }
+
+}

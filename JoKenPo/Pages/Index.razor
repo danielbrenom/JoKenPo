@@ -1,0 +1,115 @@
+﻿@page "/"
+@using JoKenPo.Helper
+@using JoKenPo.Auxiliar
+@using JoKenPo.Domain.Enum
+@using JoKenPo.Domain.Helper
+@using JoKenPo.Domain.Models
+@inject ViewModels.GameViewModel ViewModel;
+<div class="card">
+    <div class="card-body">
+        @if (ViewModel.SessionBegun)
+        {
+            <span class="badge badge-success">Game Session On</span>
+            <span class="badge badge-success">Game Turn: @ViewModel.GameTurn</span>
+        }
+        else
+        {
+            <span class="badge badge-danger">Game Session Off</span>
+        }
+        <div class="row">
+            <div class="col-6">
+                <h3>Players</h3>
+                @if (!ViewModel.AddingPlayer)
+                {
+                    <RazorTable TType="JoKenPo.Domain.Models.Player" Data="@ViewModel.Players" Actions="@Actions">
+                        <TableHeader>
+                            <th>Name</th>
+                        </TableHeader>
+                        <LineTemplate Context="player">
+                            <td>@player.Name</td>
+                        </LineTemplate>
+                    </RazorTable>                }
+                else
+                {
+                    <EditForm Model="@ViewModel.EditPlayer" OnSubmit="@ViewModel.AddPlayer">
+                        <InputText @bind-Value="@ViewModel.EditPlayer.Name"
+                                    placeholder="Player name here"/>
+                        <button type="submit" class="btn btn-success">Create player</button>
+                    </EditForm>                }
+            </div>
+            <div class="col-6">
+                <h3>Current Moves</h3>
+                <RazorTable TType="JoKenPo.Domain.Models.PlayerTurn" Data="@ViewModel.CurrentMoves">
+                    <TableHeader>
+                        <th>Player</th>
+                        <th>Move</th>
+                    </TableHeader>
+                    <LineTemplate Context="move">
+                        <td>@(ViewModel.Players.FirstOrDefault(pl => pl.Id == move.PlayerId)?.Name)</td>
+                        <td>@move.PlayerMove.Description()</td>
+                    </LineTemplate>
+                </RazorTable>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        @if (!ViewModel.SessionBegun)
+        {
+            <button class="btn btn-success" @onclick="@ViewModel.InitGame">Create Game</button>
+        }
+        else
+        {
+            <button class="btn btn-info" @onclick="@(() => ViewModel.AddingPlayer = !ViewModel.AddingPlayer)">Add Player</button>
+            <button class="btn btn-warning" @onclick="@ViewModel.CheckTurn">Check turn winner</button>
+            <button class="btn btn-success" @onclick="@ViewModel.RestartGame">Restart Game</button>
+        }
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-6">
+                <h3>Results</h3>
+                <div style="max-height: 500px; overflow-y: auto">
+                    <RazorTable TType="JoKenPo.Domain.Models.TurnResult" Data="@ViewModel.TurnResults">
+                        <TableHeader>
+                            <th>Info</th>
+                        </TableHeader>
+                        <LineTemplate Context="result">
+                            <td>@result.Annoucement</td>
+                        </LineTemplate>
+                    </RazorTable>
+                </div>
+            </div>
+            <div class="col-6">
+                <h3>All Moves</h3>
+                <div style="max-height: 500px; overflow-y: auto">
+                    <RazorTable TType="JoKenPo.Domain.Models.PlayerTurn" Data="@ViewModel.GameMoves">
+                        <TableHeader>
+                            <th>Player</th>
+                            <th>Move</th>
+                        </TableHeader>
+                        <LineTemplate Context="move">
+                            <td>@(ViewModel.Players.First(pl => pl.Id == move.PlayerId).Name)</td>
+                            <td>@move.PlayerMove.Description()</td>
+                        </LineTemplate>
+                    </RazorTable>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private IEnumerable<TableAction<Player>> Actions { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        Actions = TableActionsConstructor<Player>.Initialize()
+                                                 .AddIconAction("fa-hand-rock fa-2x", EventCallback.Factory.Create<Player>(this, player => ViewModel.MakeMove(player, HandSymbol.Stone)))
+                                                 .AddIconAction("fa-hand-paper fa-2x", EventCallback.Factory.Create<Player>(this, player => ViewModel.MakeMove(player, HandSymbol.Paper)))
+                                                 .AddIconAction("fa-hand-scissors fa-2x", EventCallback.Factory.Create<Player>(this, player => ViewModel.MakeMove(player, HandSymbol.Scissor)))
+                                                 .AddIconAction("fa-trash", EventCallback.Factory.Create<Player>(this, ViewModel.RemovePlayer))
+                                                 .Generate();
+    }
+
+}

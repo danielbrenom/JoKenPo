@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoKenPo", "JoKenPo\JoKenPo.csproj", "{511F1CD4-1F9B-4095-8159-01444EA5849E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoKenPo.Api", "JoKenPo.Api\JoKenPo.Api.csproj", "{B5487C6D-64D7-4AB1-9E22-7E957F123B68}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoKenPo.Domain", "JoKenPo.Domain\JoKenPo.Domain.csproj", "{8224260B-8833-411B-AB0F-9D27AA371FB6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{511F1CD4-1F9B-4095-8159-01444EA5849E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{511F1CD4-1F9B-4095-8159-01444EA5849E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{511F1CD4-1F9B-4095-8159-01444EA5849E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{511F1CD4-1F9B-4095-8159-01444EA5849E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5487C6D-64D7-4AB1-9E22-7E957F123B68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5487C6D-64D7-4AB1-9E22-7E957F123B68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5487C6D-64D7-4AB1-9E22-7E957F123B68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5487C6D-64D7-4AB1-9E22-7E957F123B68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8224260B-8833-411B-AB0F-9D27AA371FB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8224260B-8833-411B-AB0F-9D27AA371FB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8224260B-8833-411B-AB0F-9D27AA371FB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8224260B-8833-411B-AB0F-9D27AA371FB6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
